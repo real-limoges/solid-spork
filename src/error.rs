@@ -6,21 +6,31 @@ use axum::{
 };
 use serde_json::json;
 use std::fmt;
+use tracing::error;
 
 #[derive(Debug)]
 pub enum AppError {
     Config(String),
-    Json(JsonRejection),
+    AxumJson(JsonRejection),
+    Json(serde_json::Error),
     Redis(redis::RedisError),
     Sqlx(sqlx::Error),
+    Validation(validator::ValidationErrors),
 }
 
 impl IntoResponse for AppError {
     fn into_response(self) -> Response {
         let (status, error_message) = match self {
-            AppError::Config(e) => (
+            AppError::Config(e) => {
+                error!("Configuration error: {}", e);
+                (
+                    StatusCode::INTERNAL_SERVER_ERROR,
+                    format!("Server configuration error: {}", e),
+                )
+            },
+            AppError::AxumJson(e) => (
                 StatusCode::INTERNAL_SERVER_ERROR,
-                format!("Config Error: {}", e)
+                format!("Invalid Json Error: {}", e),
             ),
             AppError::Json(e) => (
                 StatusCode::BAD_REQUEST,
@@ -33,6 +43,10 @@ impl IntoResponse for AppError {
             AppError::Sqlx(e) => (
                 StatusCode::UNPROCESSABLE_ENTITY,
                 format!("SQLX Error: {}", e)
+            ),
+            AppError::Validation(e) => (
+                StatusCode::BAD_REQUEST,
+                format!("Validation error: {}", e)
             ),
         };
         let body = Json(json!({ "error_message": error_message }));
@@ -47,6 +61,39 @@ impl fmt::Display for AppError {
             AppError::Json(e) => write!(f, "Json Error: {}", e),
             AppError::Redis(e) => write!(f, "Redis Error: {}", e),
             AppError::Sqlx(e) => write!(f, "SQLx Error: {}", e),
+            &AppError::AxumJson(_) | &AppError::Validation(_) => todo!(),
         }
+    }
+}
+
+impl std::error::Error for AppError {}
+
+impl From<JsonRejection> for AppError {
+    fn from(e: JsonRejection) -> Self {
+        AppError::AxumJson(e)
+    }
+}
+
+impl From<serde_json::Error> for AppError {
+    fn from(e: serde_json::Error) -> Self {
+        AppError::Json(e)
+    }
+}
+
+impl From<redis::RedisError> for AppError {
+    fn from(e: redis::RedisError) -> Self {
+        AppError::Redis(e)
+    }
+}
+
+impl From<sqlx::Error> for AppError {
+    fn from(e: sqlx::Error) -> Self {
+        AppError::Sqlx(e)
+    }
+}
+
+impl From<validator::ValidationErrors> for AppError {
+    fn from(e: validator::ValidationErrors) -> Self {
+        AppError::Validation(e)
     }
 }
