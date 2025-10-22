@@ -6,5 +6,5 @@ pub async fn connect(database_url: &str) -> Result<PgPool, AppError> {
         .max_connections(5)
         .connect(database_url)
         .await
-        .map_err(AppError::Sqlx)
+        .map_err(|e| AppError::Sqlx(e))
 }
