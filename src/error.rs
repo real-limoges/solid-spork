@@ -6,6 +6,7 @@ use axum::{
 };
 use serde_json::json;
 use std::fmt;
+use std::num::ParseIntError;
 use tracing::error;
 
 #[derive(Debug)]
@@ -13,6 +14,7 @@ pub enum AppError {
     Config(String),
     AxumJson(JsonRejection),
     Json(serde_json::Error),
+    Parse(ParseIntError),
     Redis(redis::RedisError),
     Sqlx(sqlx::Error),
     Validation(validator::ValidationErrors),
@@ -35,6 +37,10 @@ impl IntoResponse for AppError {
             AppError::Json(e) => (
                 StatusCode::BAD_REQUEST,
                 format!("JSON error: {}", e)
+            ),
+            AppError::Parse(e) => (
+                StatusCode::UNPROCESSABLE_ENTITY,
+                format!("Parse error: {}", e),
             ),
             AppError::Redis(e) => (
                 StatusCode::INTERNAL_SERVER_ERROR,
@@ -59,6 +65,7 @@ impl fmt::Display for AppError {
         match self {
             AppError::Config(e) => write!(f, "Config Error: {}", e),
             AppError::Json(e) => write!(f, "Json Error: {}", e),
+            AppError::Parse(e) => write!(f, "Parse Error: {}", e),
             AppError::Redis(e) => write!(f, "Redis Error: {}", e),
             AppError::Sqlx(e) => write!(f, "SQLx Error: {}", e),
             &AppError::AxumJson(_) | &AppError::Validation(_) => todo!(),
@@ -80,6 +87,11 @@ impl From<serde_json::Error> for AppError {
     }
 }
 
+impl From<ParseIntError> for AppError {
+    fn from(e: ParseIntError) -> Self {
+        AppError::Parse(e)
+    }
+}
 impl From<redis::RedisError> for AppError {
     fn from(e: redis::RedisError) -> Self {
         AppError::Redis(e)

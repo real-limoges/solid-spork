@@ -4,20 +4,20 @@ use crate::error::AppError;
 use sqlx::PgPool;
 use std::sync::Arc;
 
-pub type AppState = Arc<AppStateInner>;
+pub type SharedAppState = Arc<AppState>;
 
-pub struct AppStateInner {
+pub struct AppState {
     pub db_pool: PgPool,
     pub redis_client: redis::Client,
     pub config: Config,
 }
 
-impl AppStateInner {
-    pub async fn new(config: &Config) -> Result<AppState, AppError> {
-        let db_pool = postgres_db::connect(&config.database_url).await?;
-        let redis_client = redis_db::connect(&config.redis_url)?;
+impl AppState {
+    pub async fn new(config: &Config) -> Result<SharedAppState, AppError> {
+        let db_pool = postgres_db::connect(&config.database_config).await?;
+        let redis_client = redis_db::connect(&config.redis_config)?;
 
-        Ok(Arc::new(AppStateInner {
+        Ok(Arc::new(AppState {
             db_pool,
             redis_client,
             config: config.clone(),

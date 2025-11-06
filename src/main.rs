@@ -2,8 +2,8 @@
 #![allow(unused_variables)]
 #![allow(unused_imports)]
 
-use solid_spork::{api::run_server, config::Config, state::AppStateInner};
-use solid_spork::config::ShadowRedisConfig;
+use solid_spork::{api::run_server, config::Config, state::AppState};
+use solid_spork::config::RedisConfig;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
@@ -15,7 +15,7 @@ async fn main() -> anyhow::Result<()> {
     // I don't really like how this is implemented right now. So I'll change it later with below
     // let postgres_config = ShadowRedisConfig::from_env()?;
     // let redis_config = ShadowRedisConfig::from_env()?;
-    let app_state = AppStateInner::new(&config).await?;
+    let app_state = AppState::new(&config).await?;
 
     println!(
         "Starting server on https://{} ...",
