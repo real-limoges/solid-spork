@@ -1,5 +1,8 @@
 use crate::error::AppError;
-use sqlx::{PgPool, postgres::{PgPoolOptions, PgConnectOptions}};
+use sqlx::{
+    PgPool, 
+    postgres::{PgPoolOptions, PgConnectOptions}
+};
 use crate::config::DbConfig;
 
 pub async fn connect(database_config: &DbConfig) -> Result<PgPool, AppError> {
@@ -16,7 +19,7 @@ pub async fn connect(database_config: &DbConfig) -> Result<PgPool, AppError> {
     let pool = pool
         .connect_with(connect_options)
         .await
-        .map_err(|e| AppError::Sqlx(e))?;
+        .map_err(AppError::Sqlx)?;
 
     Ok(pool)
 
