@@ -9,6 +9,7 @@ use std::fmt;
 use std::num::ParseIntError;
 use tracing::error;
 
+// A wordy Error for monadic passing via Result.
 #[derive(Debug)]
 pub enum AppError {
     Config(String),
@@ -20,6 +21,7 @@ pub enum AppError {
     Validation(validator::ValidationErrors),
 }
 
+// You have to implement IntoResponse trait for the Errors.
 impl IntoResponse for AppError {
     fn into_response(self) -> Response {
         let (status, error_message) = match self {
@@ -60,6 +62,7 @@ impl IntoResponse for AppError {
     }
 }
 
+// Implement a display for Errors.
 impl fmt::Display for AppError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {

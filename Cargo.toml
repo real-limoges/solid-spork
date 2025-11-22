@@ -7,7 +7,7 @@ edition = "2024"
 anyhow = { version = "1.0" }
 axum = { version = "0.8.6" }
 dotenvy = { version = "0.15.7" }
-polars = { version = "0.51.0", features = ["lazy"] }
+polars = { version = "0.52.0"}
 redis = { version = "0.32.7", features = ["tokio-comp"] }
 serde_json = { version = "1.0.145" }
 sqlx = { version = "0.8.6", features = ["macros", "postgres", "runtime-tokio", "chrono"]}

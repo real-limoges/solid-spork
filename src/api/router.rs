@@ -23,6 +23,7 @@ pub async fn run_server(app_state: SharedAppState) -> anyhow::Result<()> {
     Ok(())
 }
 
+// Add more routes here! 
 fn create_router(app_state: SharedAppState) -> Router {
     Router::new()
         .route("/", get(crate::api::handlers::root_handler))

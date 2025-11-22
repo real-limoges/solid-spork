@@ -5,6 +5,7 @@ use sqlx::{
 };
 use crate::config::DbConfig;
 
+// A very practical way to set up Postgres.
 pub async fn connect(database_config: &DbConfig) -> Result<PgPool, AppError> {
     let connect_options = PgConnectOptions::new()
         .host(&database_config.database_host)
