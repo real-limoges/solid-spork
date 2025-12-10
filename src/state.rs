@@ -1,5 +1,5 @@
 use crate::config::Config;
-use crate::data::{postgres_db, redis_db};
+use crate::database::{postgres_db, redis_db};
 use crate::error::AppError;
 use sqlx::PgPool;
 use std::sync::Arc;

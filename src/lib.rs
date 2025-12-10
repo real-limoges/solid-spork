@@ -2,4 +2,4 @@ pub mod api;
 pub mod config;
 pub mod state;
 pub mod error;
-pub mod data;
+pub mod database;
