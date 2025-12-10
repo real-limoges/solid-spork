@@ -8,9 +8,15 @@ pub async fn root_handler() -> &'static str {
 }
 pub async fn do_something_handler(
     Json(payload): Json<DoSomethingRequest>
-) -> (StatusCode, Json<DoSomethingResponse>) {
+) -> Result<(StatusCode, Json<DoSomethingResponse>), StatusCode> {
     // placeholder logic
-    let res = DoSomethingResponse { message: format!("Hello, {}! You are id: {}", payload.name, payload.id) };
+    let everything_is_ok = true;
 
-    (StatusCode::OK, Json(res))
+    if !everything_is_ok {
+        Err(StatusCode::INTERNAL_SERVER_ERROR)
+    }
+    else {
+        let res = DoSomethingResponse { message: format!("Hello, {}! You are id: {}", payload.name, payload.id) };
+        Ok((StatusCode::OK, Json(res)))
+    }
 }
