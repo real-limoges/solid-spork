@@ -2992,6 +2992,7 @@ dependencies = [
  "dotenvy",
  "polars",
  "redis",
+ "serde",
  "serde_json",
  "sqlx",
  "tokio",
