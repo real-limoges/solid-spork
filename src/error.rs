@@ -1,8 +1,8 @@
 use axum::{
     Json,
+    extract::rejection::JsonRejection,
     http::StatusCode,
     response::{IntoResponse, Response},
-    extract::rejection::JsonRejection
 };
 use serde_json::json;
 use std::fmt;
@@ -31,31 +31,27 @@ impl IntoResponse for AppError {
                     StatusCode::INTERNAL_SERVER_ERROR,
                     format!("Server configuration error: {}", e),
                 )
-            },
+            }
             AppError::AxumJson(e) => (
                 StatusCode::INTERNAL_SERVER_ERROR,
                 format!("Invalid Json Error: {}", e),
             ),
-            AppError::Json(e) => (
-                StatusCode::BAD_REQUEST,
-                format!("JSON error: {}", e)
-            ),
+            AppError::Json(e) => (StatusCode::BAD_REQUEST, format!("JSON error: {}", e)),
             AppError::Parse(e) => (
                 StatusCode::UNPROCESSABLE_ENTITY,
                 format!("Parse error: {}", e),
             ),
             AppError::Redis(e) => (
                 StatusCode::INTERNAL_SERVER_ERROR,
-                format!("Redis error: {}", e)
+                format!("Redis error: {}", e),
             ),
             AppError::Sqlx(e) => (
                 StatusCode::UNPROCESSABLE_ENTITY,
-                format!("SQLX Error: {}", e)
+                format!("SQLX Error: {}", e),
             ),
-            AppError::Validation(e) => (
-                StatusCode::BAD_REQUEST,
-                format!("Validation error: {}", e)
-            ),
+            AppError::Validation(e) => {
+                (StatusCode::BAD_REQUEST, format!("Validation error: {}", e))
+            }
         };
         let body = Json(json!({ "error_message": error_message }));
         (status, body).into_response()

@@ -1,9 +1,9 @@
+use crate::config::DbConfig;
 use crate::error::AppError;
 use sqlx::{
-    PgPool, 
-    postgres::{PgPoolOptions, PgConnectOptions}
+    PgPool,
+    postgres::{PgConnectOptions, PgPoolOptions},
 };
-use crate::config::DbConfig;
 
 // A very practical way to set up Postgres.
 pub async fn connect(database_config: &DbConfig) -> Result<PgPool, AppError> {
@@ -14,8 +14,7 @@ pub async fn connect(database_config: &DbConfig) -> Result<PgPool, AppError> {
         .password(&database_config.database_pass)
         .database(&database_config.database_name);
 
-    let pool = PgPoolOptions::new()
-        .max_connections(5);
+    let pool = PgPoolOptions::new().max_connections(5);
 
     let pool = pool
         .connect_with(connect_options)
@@ -23,5 +22,4 @@ pub async fn connect(database_config: &DbConfig) -> Result<PgPool, AppError> {
         .map_err(AppError::Sqlx)?;
 
     Ok(pool)
-
 }

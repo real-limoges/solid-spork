@@ -1,6 +1,6 @@
+use crate::config::RedisConfig;
 use crate::error::AppError;
 use redis;
-use crate::config::RedisConfig;
 
 // Stupidly simple Redis connection.
 pub fn connect(redis_config: &RedisConfig) -> Result<redis::Client, AppError> {

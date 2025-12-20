@@ -1,5 +1,5 @@
-mod router;
-mod handlers;
 mod dtos;
+mod handlers;
+mod router;
 
 pub use router::run_server;
