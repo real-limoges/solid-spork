@@ -27,10 +27,6 @@ pub async fn run_server(app_state: SharedAppState) -> anyhow::Result<()> {
 fn create_router(app_state: SharedAppState) -> Router {
     Router::new()
         .route("/", get(crate::api::handlers::root_handler))
-        .route(
-            "/do_something",
-            get(crate::api::handlers::do_something_handler),
-        )
         .route("/model_a", post(crate::api::handlers::post_model_a))
         .route("/model_b", post(crate::api::handlers::post_model_b))
         .with_state(app_state)

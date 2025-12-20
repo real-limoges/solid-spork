@@ -3,7 +3,9 @@ use solid_spork::{api::run_server, config::Config, state::AppState};
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     // I'm using a .env file for configuration.
-    dotenvy::dotenv().expect("Failed to load .env file");
+    dotenvy::from_filename(".env.local").ok();
+    dotenvy::dotenv().ok();
+    
     tracing_subscriber::fmt().with_target(false).init();
 
     // Load the configuration . AppState is an Arc
