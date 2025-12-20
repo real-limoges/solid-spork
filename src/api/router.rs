@@ -31,5 +31,7 @@ fn create_router(app_state: SharedAppState) -> Router {
             "/do_something",
             get(crate::api::handlers::do_something_handler),
         )
+        .route("/model_a", post(crate::api::handlers::post_model_a))
+        .route("/model_b", post(crate::api::handlers::post_model_b))
         .with_state(app_state)
 }
