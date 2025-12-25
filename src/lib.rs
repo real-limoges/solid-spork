@@ -4,6 +4,7 @@ pub mod database;
 pub mod domain;
 pub mod error;
 pub mod state;
-pub mod insights;
 pub mod common;
 pub mod services;
+pub mod pipelines;
+pub mod repository;

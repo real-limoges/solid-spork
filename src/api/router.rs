@@ -1,4 +1,6 @@
-#![allow(unused_imports)]
+/*
+This is where the API router lives, and the routes themselves (which point to the handlers).
+ */
 
 use crate::state::SharedAppState;
 use axum::{

@@ -8,7 +8,7 @@ async fn main() -> anyhow::Result<()> {
     
     tracing_subscriber::fmt().with_target(false).init();
 
-    // Load the configuration . AppState is an Arc
+    // Load the configuration. AppState is an Arc
     let config = Config::from_env()?;
     let app_state = AppState::new(&config).await?;
 
